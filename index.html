@@ -1,70 +1,187 @@
-function doPost(e) {
-  var lock = LockService.getScriptLock();
-  lock.tryLock(10000);
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Evaluación Psicométrica - BAI & BDI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; -webkit-user-select: none; user-select: none; }
+    input[type="text"], input[type="number"] { -webkit-user-select: auto; user-select: auto; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen" oncontextmenu="return false;">
 
-  try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName("Respuestas") || ss.insertSheet("Respuestas");
+  <header class="bg-indigo-900 text-white py-4 md:py-6 shadow-md">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="text-xl md:text-2xl font-bold tracking-tight">Evaluación Psicológica</h1>
+      <p class="text-indigo-200 text-xs md:text-sm mt-1">Inventarios de Ansiedad y Depresión de Beck</p>
+    </div>
+  </header>
 
-    if (sheet.getLastRow() === 0) {
-      var headers = ["Fecha / Hora", "Nombre", "Edad", "Grado y Grupo", "Puntaje BAI", "Nivel Ansiedad", "Puntaje BDI", "Nivel Depresión", "Alerta Suicida (BDI-9)", "Dieta / Pérdida Peso (BDI-19)"];
-      for (var i = 1; i <= 21; i++) headers.push("BAI_" + i);
-      for (var j = 1; j <= 21; j++) headers.push("BDI_" + j);
-      sheet.appendRow(headers);
-      sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#F3F4F6");
-    }
+  <main class="max-w-4xl mx-auto px-4 py-6 md:py-8">
+    <div id="progressTracker" class="mb-6 md:mb-8">
+      <div class="flex items-center justify-between text-[10px] md:text-xs font-semibold text-slate-600 mb-2">
+        <span id="stepLabel1" class="text-indigo-600">1. Datos Generales</span>
+        <span id="stepLabel2" class="hidden sm:inline text-slate-500">2. Ansiedad</span>
+        <span id="stepLabel3" class="hidden sm:inline text-slate-500">3. Depresión</span>
+        <span id="stepLabel4" class="text-slate-500">4. Finalizar</span>
+      </div>
+      <div class="w-full bg-slate-200 rounded-full h-1.5 md:h-2 overflow-hidden">
+        <div id="progressBar" class="bg-indigo-600 h-1.5 md:h-2 transition-all duration-300" style="width: 25%"></div>
+      </div>
+    </div>
 
-    var data = JSON.parse(e.postData.contents);
-    var row = [
-      new Date().toLocaleString("es-MX", { timeZone: "America/Mexico_City" }),
-      data.nombre || "", data.edad || "", data.gradoGrupo || "",
-      data.baiScore, data.baiNivel, data.bdiScore, data.bdiNivel,
-      data.alertaRiesgo ? "SÍ (VALOR " + data.bdiResponses["item_9"] + ")" : "NO",
-      data.bdiDieta || "No especificado"
+    <!-- PASO 1 -->
+    <section id="step1" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
+      <h2 class="text-lg md:text-xl font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100">Ficha de Identificación</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div class="md:col-span-3">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Nombre completo *</label>
+          <input type="text" id="nombre" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none" autocomplete="off">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Edad *</label>
+          <input type="number" id="edad" min="10" max="99" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Grado y Grupo *</label>
+          <input type="text" id="gradoGrupo" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none" autocomplete="off">
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button onclick="goToStep(2)" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg">Continuar &rarr;</button>
+      </div>
+    </section>
+
+    <!-- PASO 2 -->
+    <section id="step2" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
+      <h2 class="text-lg md:text-xl font-bold mb-2">Inventario de Ansiedad</h2>
+      <p class="text-xs md:text-sm text-slate-600 mb-4">Indica cuánto te ha molestado cada síntoma <strong>durante la última semana, inclusive hoy</strong>.</p>
+      <div id="baiContainer" class="space-y-3"></div>
+      <div class="mt-6 flex flex-col-reverse md:flex-row justify-between gap-3">
+        <button onclick="goToStep(1)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg">&larr; Volver</button>
+        <button onclick="goToStep(3)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg">Continuar &rarr;</button>
+      </div>
+    </section>
+
+    <!-- PASO 3 -->
+    <section id="step3" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
+      <h2 class="text-lg md:text-xl font-bold mb-2">Inventario de Depresión</h2>
+      <p class="text-xs md:text-sm text-slate-600 mb-4">Selecciona la oración que mejor describa cómo te sentiste <strong>la semana pasada inclusive el día de hoy</strong>.</p>
+      <div id="bdiContainer" class="space-y-4"></div>
+      <div class="mt-6 flex flex-col-reverse md:flex-row justify-between gap-3">
+        <button onclick="goToStep(2)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg">&larr; Volver</button>
+        <button id="btnSubmit" onclick="finalizarYEnviar()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2.5 rounded-lg">Finalizar Evaluación</button>
+      </div>
+    </section>
+
+    <!-- PASO 4 (FINAL) -->
+    <section id="step4" class="hidden text-center bg-white rounded-xl shadow-sm border border-slate-200 p-8 md:p-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-6">
+        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">¡Gracias por participar!</h2>
+      <p class="text-slate-600 mb-8">Tus respuestas han sido registradas correctamente. Ya puedes cerrar esta ventana.</p>
+      <div id="syncStatus" class="text-sm text-slate-500 py-2"></div>
+      <button onclick="location.reload()" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg">Iniciar nueva evaluación</button>
+    </section>
+  </main>
+
+  <script>
+    const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbxYskLZiYwdwfwnFi33G6-UFzMMBCZgbfYMfP3tD2SbIgNZ7zT-Mjj2jGpQzAbGXDk0/exec";
+    
+    // Protección de código
+    document.addEventListener('keydown', e => { if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J'].includes(e.key.toUpperCase()))||(e.ctrlKey&&e.key.toUpperCase()==='U')){e.preventDefault();return false;} });
+    document.addEventListener('copy', e => { e.preventDefault(); return false; });
+
+    const baiQuestions = ["Entumecimiento, hormigueo", "Sentir oleadas de calor (bochorno)", "Debilitamiento de las piernas", "Dificultad para relajarse", "Miedo a que pase lo peor", "Sensación de mareo", "Opresión en el pecho", "Inseguridad", "Terror", "Nerviosismo", "Sensación de ahogo", "Manos temblorosas", "Cuerpo tembloroso", "Miedo a perder el control", "Dificultad para respirar", "Miedo a morir", "Asustado", "Indigestión", "Debilidad", "Ruborizarse", "Sudoración"];
+    
+    const bdiQuestions = [
+      ["0 Yo no me siento triste.", "1 Me siento triste.", "2 Me siento triste todo el tiempo y no puedo evitarlo.", "3 Estoy tan triste o infeliz que no puedo soportarlo."],
+      ["0 En general no me siento descorazonado por el futuro.", "1 Me siento descorazonado por mi futuro.", "2 Siento que no tengo nada que esperar del futuro.", "3 Siento que el futuro no tiene esperanza."],
+      ["0 Yo no me siento como un fracasado.", "1 Siento que he fracasado más que las personas en general.", "2 Al repasar lo que he vivido, todo lo que veo son muchos fracasos.", "3 Siento que soy un completo fracaso como persona."],
+      ["0 Obtengo tanta satisfacción de las cosas como solía hacerlo.", "1 Yo no disfruto de las cosas de la manera como solía hacerlo.", "2 Ya no obtengo verdadera satisfacción de nada.", "3 Estoy insatisfecho o aburrido con todo."],
+      ["0 En realidad yo no me siento culpable.", "1 Me siento culpable una gran parte del tiempo.", "2 Me siento culpable la mayor parte del tiempo.", "3 Me siento culpable todo el tiempo."],
+      ["0 Yo no me siento que esté siendo castigado.", "1 Siento que podría ser castigado.", "2 Espero ser castigado.", "3 Siento que he sido castigado."],
+      ["0 Yo no me siento desilusionado de mí mismo.", "1 Estoy desilusionado de mí mismo.", "2 Estoy disgustado conmigo mismo.", "3 Me odio."],
+      ["0 Yo no me siento que sea peor que otras personas.", "1 Me critico a mí mismo por mis debilidades o errores.", "2 Me culpo todo el tiempo por mis fallas.", "3 Me culpo por todo lo malo que sucede."],
+      ["0 Yo no tengo pensamientos suicidas.", "1 Tengo pensamientos suicidas, pero no los llevaría a cabo.", "2 Me gustaría suicidarme.", "3 Me suicidaría si tuviera la oportunidad."],
+      ["0 Yo no lloro más de lo usual.", "1 Lloro más ahora de lo que solía hacerlo.", "2 Actualmente lloro todo el tiempo.", "3 Antes podía llorar, pero ahora no lo puedo hacer a pesar de que lo deseo."],
+      ["0 Yo no estoy más irritable de lo que solía estar.", "1 Me enojo o irrito más fácilmente que antes.", "2 Me siento irritado todo el tiempo.", "3 Ya no me irrito de las cosas por las que solía hacerlo."],
+      ["0 Yo no he perdido el interés en la gente.", "1 Estoy menos interesado en la gente de lo que solía estar.", "2 He perdido en gran medida el interés en la gente.", "3 He perdido todo el interés en la gente."],
+      ["0 Tomo decisiones tan bien como siempre lo he hecho.", "1 Pospongo tomar decisiones más que antes.", "2 Tengo más dificultad en tomar decisiones que antes.", "3 Ya no puedo tomar decisiones."],
+      ["0 Yo no siento que me vea peor de cómo me veía.", "1 Estoy preocupado de verme viejo (a) o poco atractivo (a).", "2 Siento que hay cambios permanentes en mi apariencia que me hacen ver poco atractivo (a).", "3 Creo que me veo feo (a)."],
+      ["0 Puedo trabajar tan bien como antes.", "1 Requiero de más esfuerzo para iniciar algo.", "2 Tengo que obligarme para hacer algo.", "3 Yo no puedo hacer ningún trabajo."],
+      ["0 Puedo dormir tan bien como antes.", "1 Ya no duermo tan bien como solía hacerlo.", "2 Me despierto más temprano de lo normal.", "3 Me despierto muchas horas antes de lo que solía hacerlo."],
+      ["0 Yo no me canso más de lo habitual.", "1 Me canso más fácilmente de lo que solía hacerlo.", "2 Con cualquier cosa que haga me canso.", "3 Estoy muy cansado para hacer cualquier cosa."],
+      ["0 Mi apetito no es peor de lo habitual.", "1 Mi apetito no es tan bueno como solía serlo.", "2 Mi apetito está muy mal ahora.", "3 No tengo apetito de nada."],
+      ["0 Yo no he perdido mucho peso últimamente.", "1 He perdido más de 2 kg.", "2 He perdido más de 5 kg.", "3 He perdido más de 8 kg."],
+      ["0 Yo no estoy más preocupado de mi salud que antes.", "1 Estoy preocupado acerca de problemas físicos.", "2 Estoy muy preocupado por problemas físicos.", "3 Estoy tan preocupado por mis problemas físicos que no puedo pensar en nada más."],
+      ["0 Yo no he notado ningún cambio reciente en mi interés por los chicos/chicas.", "1 Estoy menos interesado.", "2 Estoy mucho menos interesado.", "3 He perdido completamente el interés."]
     ];
 
-    for (var a = 1; a <= 21; a++) row.push(data.baiResponses["item_" + a] !== undefined ? data.baiResponses["item_" + a] : "");
-    for (var b = 1; b <= 21; b++) row.push(data.bdiResponses["item_" + b] !== undefined ? data.bdiResponses["item_" + b] : "");
+    // Render BAI
+    const baiContainer = document.getElementById("baiContainer");
+    baiQuestions.forEach((q, i) => {
+      baiContainer.innerHTML += `<div class="p-3 bg-slate-50 rounded-lg border border-slate-200 flex flex-col sm:flex-row justify-between gap-3"><span class="text-sm"><strong>${i+1}.</strong> ${q}</span><div class="flex gap-2">${[0,1,2,3].map(v => `<label class="w-8 h-8 rounded border border-slate-300 bg-white cursor-pointer relative"><input type="radio" name="bai_${i+1}" value="${v}" class="sr-only peer"><span class="peer-checked:bg-indigo-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded text-sm">${v}</span></label>`).join('')}</div></div>`;
+    });
 
-    sheet.appendRow(row);
-    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: error.toString() })).setMimeType(ContentService.MimeType.JSON);
-  } finally {
-    lock.releaseLock();
-  }
-}
+    // Render BDI
+    const bdiContainer = document.getElementById("bdiContainer");
+    bdiQuestions.forEach((opts, i) => {
+      let extra = i === 18 ? `<div class="mt-3 pt-3 border-t text-sm"><label class="block mb-2">¿A propósito estás tratando de perder peso comiendo menos?</label><div class="flex gap-4"><label><input type="radio" name="bdi_dieta" value="Sí" class="mr-1">Sí</label><label><input type="radio" name="bdi_dieta" value="No" class="mr-1" checked>No</label></div></div>` : '';
+      let optsHtml = opts.map((opt, optIdx) => `<label class="flex items-start gap-2 p-2 rounded-lg border bg-white cursor-pointer"><input type="radio" name="bdi_${i+1}" value="${optIdx}" class="mt-1"><span class="text-sm">${opt}</span></label>`).join('');
+      bdiContainer.innerHTML += `<div class="p-4 bg-slate-50 rounded-lg border mb-4"><div class="font-bold text-indigo-700 mb-2">Grupo ${i+1}</div><div class="space-y-2">${optsHtml}</div>${extra}</div>`;
+    });
 
-// NUEVO: Función para enviar los datos al Dashboard si la clave es correcta
-function doGet(e) {
-  // Verificación básica de seguridad
-  if (!e.parameter.clave || e.parameter.clave !== "psico2026") {
-    return ContentService.createTextOutput(JSON.stringify({ error: "No autorizado" })).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName("Respuestas");
-  
-  if (!sheet || sheet.getLastRow() <= 1) {
-    return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  var data = sheet.getDataRange().getValues();
-  var headers = data[0];
-  var result = [];
-
-  // Convertir las filas de Excel a un formato que el Dashboard entienda
-  for (var i = 1; i < data.length; i++) {
-    var row = data[i];
-    var obj = {};
-    for (var j = 0; j < headers.length; j++) {
-      obj[headers[j]] = row[j];
+    function goToStep(s) {
+      if(s===2 && (!document.getElementById("nombre").value || !document.getElementById("edad").value || !document.getElementById("gradoGrupo").value)) return alert("Completa tus datos.");
+      if(s===3 && document.querySelectorAll('input[name^="bai_"]:checked').length < 21) return alert("Responde todas las preguntas de Ansiedad.");
+      [1,2,3,4].forEach(i => document.getElementById(`step${i}`).classList.toggle('hidden', i!==s));
+      window.scrollTo(0,0);
+      if(s<=4) document.getElementById("progressBar").style.width = {1:"25%",2:"50%",3:"75%",4:"100%"}[s];
     }
-    result.push(obj);
-  }
 
-  // Invertir para que los más recientes salgan primero
-  result.reverse();
-  
-  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
-}
+    function getLevel(s, t) {
+      if(t==='bai') return s<=7?"Mínima":s<=15?"Leve":s<=25?"Moderada":"Severa";
+      return s<=9?"Mínima / Normal":s<=18?"Leve":s<=29?"Moderada":"Severa";
+    }
+
+    async function finalizarYEnviar() {
+      if(document.querySelectorAll('input[name^="bdi_"]:checked').length < 21) return alert("Responde todas las preguntas de Depresión.");
+      
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = true; btn.innerHTML = "Enviando...";
+
+      let baiScore = 0, bdiScore = 0, baiResp = {}, bdiResp = {};
+      for(let i=1; i<=21; i++) {
+        baiResp[`item_${i}`] = parseInt(document.querySelector(`input[name="bai_${i}"]:checked`).value);
+        baiScore += baiResp[`item_${i}`];
+        bdiResp[`item_${i}`] = parseInt(document.querySelector(`input[name="bdi_${i}"]:checked`).value);
+        bdiScore += bdiResp[`item_${i}`];
+      }
+
+      const payload = {
+        nombre: document.getElementById("nombre").value.trim(),
+        edad: document.getElementById("edad").value.trim(),
+        gradoGrupo: document.getElementById("gradoGrupo").value.trim(),
+        baiScore, baiNivel: getLevel(baiScore, 'bai'),
+        bdiScore, bdiNivel: getLevel(bdiScore, 'bdi'),
+        alertaRiesgo: bdiResp["item_9"] > 0,
+        bdiDieta: (document.querySelector('input[name="bdi_dieta"]:checked')||{}).value||"No",
+        baiResponses: baiResp, bdiResponses: bdiResp
+      };
+
+      try {
+        await fetch(APPS_SCRIPT_API_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        document.getElementById("syncStatus").innerHTML = `<span class="text-emerald-600">Enviado con éxito.</span>`;
+      } catch (err) {
+        document.getElementById("syncStatus").innerHTML = `<span class="text-red-500">Error de conexión. Avisa al profesor.</span>`;
+      }
+      goToStep(4);
+    }
+  </script>
+</body>
+</html>
