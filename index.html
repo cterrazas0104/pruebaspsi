@@ -2,76 +2,103 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Evaluación Psicométrica - BAI & BDI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; }
+    body { 
+      font-family: 'Inter', sans-serif;
+      /* Prevent text selection */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
+    /* Allow text selection in inputs */
+    input[type="text"], input[type="number"] {
+      -webkit-user-select: auto;
+      -moz-user-select: auto;
+      -ms-user-select: auto;
+      user-select: auto;
+    }
+
     @media print {
       .no-print { display: none !important; }
       .print-only { display: block !important; }
+      .print-break-inside-avoid { break-inside: avoid; }
+      
+      /* Re-enable text selection for printing */
+      body {
+        -webkit-user-select: auto;
+        -moz-user-select: auto;
+        -ms-user-select: auto;
+        user-select: auto;
+      }
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen" oncontextmenu="return false;">
 
   <!-- Header -->
-  <header class="bg-indigo-900 text-white py-6 shadow-md no-print">
+  <header class="bg-indigo-900 text-white py-4 md:py-6 shadow-md no-print">
     <div class="max-w-4xl mx-auto px-4">
-      <h1 class="text-2xl font-bold tracking-tight">Evaluación Psicológica</h1>
-      <p class="text-indigo-200 text-sm mt-1">Inventarios de Ansiedad y Depresión de Beck (BAI / BDI)</p>
+      <h1 class="text-xl md:text-2xl font-bold tracking-tight">Evaluación Psicológica</h1>
+      <p class="text-indigo-200 text-xs md:text-sm mt-1">Inventarios de Ansiedad y Depresión de Beck (BAI / BDI)</p>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 py-8">
+  <main class="max-w-4xl mx-auto px-4 py-6 md:py-8">
 
     <!-- Progress Tracker -->
-    <div id="progressTracker" class="mb-8 no-print">
-      <div class="flex items-center justify-between text-xs font-semibold text-slate-600 mb-2">
+    <div id="progressTracker" class="mb-6 md:mb-8 no-print">
+      <div class="flex items-center justify-between text-[10px] md:text-xs font-semibold text-slate-600 mb-2">
         <span id="stepLabel1" class="text-indigo-600">1. Datos Generales</span>
-        <span id="stepLabel2">2. Inventario BAI</span>
-        <span id="stepLabel3">3. Inventario BDI</span>
-        <span id="stepLabel4">4. Resultados</span>
+        <span id="stepLabel2" class="hidden sm:inline">2. Inventario BAI</span>
+        <span id="stepLabel2_mobile" class="sm:hidden">2. BAI</span>
+        <span id="stepLabel3" class="hidden sm:inline">3. Inventario BDI</span>
+        <span id="stepLabel3_mobile" class="sm:hidden">3. BDI</span>
+        <span id="stepLabel4">4. Finalizar</span>
       </div>
-      <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-        <div id="progressBar" class="bg-indigo-600 h-2 transition-all duration-300" style="width: 25%"></div>
+      <div class="w-full bg-slate-200 rounded-full h-1.5 md:h-2 overflow-hidden">
+        <div id="progressBar" class="bg-indigo-600 h-1.5 md:h-2 transition-all duration-300" style="width: 25%"></div>
       </div>
     </div>
 
     <!-- PASO 1: Datos de identificación -->
-    <section id="step1" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-      <h2 class="text-xl font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100">Ficha de Identificación</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <section id="step1" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
+      <h2 class="text-lg md:text-xl font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100">Ficha de Identificación</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <div class="md:col-span-3">
           <label class="block text-sm font-medium text-slate-700 mb-1" for="nombre">Nombre completo *</label>
-          <input type="text" id="nombre" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Nombre completo del evaluado">
+          <input type="text" id="nombre" class="w-full rounded-lg border border-slate-300 px-3 md:px-4 py-2 md:py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm md:text-base" placeholder="Nombre completo del evaluado" autocomplete="off">
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1" for="edad">Edad *</label>
-          <input type="number" id="edad" min="10" max="99" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Años">
+          <input type="number" id="edad" min="10" max="99" class="w-full rounded-lg border border-slate-300 px-3 md:px-4 py-2 md:py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm md:text-base" placeholder="Años">
         </div>
         <div class="md:col-span-2">
           <label class="block text-sm font-medium text-slate-700 mb-1" for="gradoGrupo">Grado y Grupo *</label>
-          <input type="text" id="gradoGrupo" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Ej. 3° B">
+          <input type="text" id="gradoGrupo" class="w-full rounded-lg border border-slate-300 px-3 md:px-4 py-2 md:py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm md:text-base" placeholder="Ej. 3° B" autocomplete="off">
         </div>
       </div>
-      <div class="mt-8 flex justify-end">
-        <button onclick="goToStep(2)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
+      <div class="mt-6 md:mt-8 flex justify-end">
+        <button onclick="goToStep(2)" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors text-sm md:text-base">
           Continuar a BAI &rarr;
         </button>
       </div>
     </section>
 
     <!-- PASO 2: Inventario de Ansiedad de Beck (BAI) -->
-    <section id="step2" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-      <div class="mb-6 pb-4 border-b border-slate-100">
-        <h2 class="text-xl font-bold text-slate-800">Inventario de Ansiedad de Beck (BAI)</h2>
-        <p class="text-sm text-slate-600 mt-2">
+    <section id="step2" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
+      <div class="mb-5 md:mb-6 pb-4 border-b border-slate-100">
+        <h2 class="text-lg md:text-xl font-bold text-slate-800">Inventario de Ansiedad de Beck (BAI)</h2>
+        <p class="text-xs md:text-sm text-slate-600 mt-2">
           <strong>Instrucciones:</strong> Abajo hay una lista que contiene los síntomas más comunes de la ansiedad. Lee cuidadosamente cada afirmación e indica cuánto te ha molestado cada síntoma <strong>durante la última semana, inclusive hoy</strong>.
         </p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-medium text-slate-600 mt-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] md:text-xs font-medium text-slate-600 mt-4 bg-slate-50 p-2 md:p-3 rounded-lg border border-slate-200">
           <div><span class="font-bold text-indigo-700">0:</span> Poco o nada</div>
           <div><span class="font-bold text-indigo-700">1:</span> Más o menos</div>
           <div><span class="font-bold text-indigo-700">2:</span> Moderadamente</div>
@@ -79,107 +106,151 @@
         </div>
       </div>
 
-      <div id="baiContainer" class="space-y-4"></div>
+      <div id="baiContainer" class="space-y-3 md:space-y-4"></div>
 
-      <div class="mt-8 flex justify-between">
-        <button onclick="goToStep(1)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg transition-colors">
+      <div class="mt-6 md:mt-8 flex flex-col-reverse md:flex-row justify-between gap-3 md:gap-0">
+        <button onclick="goToStep(1)" class="w-full md:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg transition-colors text-sm md:text-base">
           &larr; Volver
         </button>
-        <button onclick="goToStep(3)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
+        <button onclick="goToStep(3)" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors text-sm md:text-base">
           Continuar a BDI &rarr;
         </button>
       </div>
     </section>
 
     <!-- PASO 3: Inventario de Depresión de Beck (BDI) -->
-    <section id="step3" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-      <div class="mb-6 pb-4 border-b border-slate-100">
-        <h2 class="text-xl font-bold text-slate-800">Inventario de Depresión de Beck (BDI)</h2>
-        <p class="text-sm text-slate-600 mt-2">
+    <section id="step3" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
+      <div class="mb-5 md:mb-6 pb-4 border-b border-slate-100">
+        <h2 class="text-lg md:text-xl font-bold text-slate-800">Inventario de Depresión de Beck (BDI)</h2>
+        <p class="text-xs md:text-sm text-slate-600 mt-2">
           <strong>Instrucciones:</strong> En este cuestionario se encuentran grupos de oraciones. Lee cada grupo cuidadosamente y selecciona la oración que mejor describa cómo te sentiste <strong>la semana pasada inclusive el día de hoy</strong>.
         </p>
       </div>
 
-      <div id="bdiContainer" class="space-y-6"></div>
+      <div id="bdiContainer" class="space-y-4 md:space-y-6"></div>
 
-      <div class="mt-8 flex justify-between">
-        <button onclick="goToStep(2)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg transition-colors">
+      <div class="mt-6 md:mt-8 flex flex-col-reverse md:flex-row justify-between gap-3 md:gap-0">
+        <button onclick="goToStep(2)" class="w-full md:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg transition-colors text-sm md:text-base">
           &larr; Volver
         </button>
-        <button id="btnSubmit" onclick="finalizarYEnviar()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2">
-          <span>Finalizar y Obtener Resultados</span>
+        <button id="btnSubmit" onclick="finalizarYEnviar()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
+          <span>Finalizar Evaluación</span>
         </button>
       </div>
     </section>
 
-    <!-- PASO 4: Resultados / Reporte -->
-    <section id="step4" class="hidden">
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-        <div class="flex justify-between items-start border-b border-slate-200 pb-4 mb-6">
+    <!-- PASO 4: Pantalla de Agradecimiento (Vista Alumno) -->
+    <section id="step4" class="hidden text-center bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-10">
+      <div class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-emerald-100 mb-4 md:mb-6">
+        <svg class="w-6 h-6 md:w-8 md:h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">Evaluación Completada</h2>
+      <p class="text-sm md:text-base text-slate-600 mb-6 md:mb-8">Tus respuestas han sido enviadas y registradas correctamente. Muchas gracias por tu participación.</p>
+      
+      <div id="syncStatus" class="text-center text-xs md:text-sm text-slate-500 py-2 mb-4 md:mb-6">
+        Guardando en la base de datos...
+      </div>
+
+      <button onclick="location.reload()" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors text-sm md:text-base">
+        Hacer una nueva evaluación
+      </button>
+
+      <!-- Botón discreto para el docente -->
+      <div class="mt-8 md:mt-12 text-right">
+        <button onclick="desbloquearResultados()" class="text-[10px] md:text-xs text-slate-300 hover:text-slate-500 transition-colors bg-transparent border-none p-2 rounded">
+          Acceso Docente
+        </button>
+      </div>
+    </section>
+
+    <!-- PASO 5: Resultados y Reporte (Vista Privada Docente) -->
+    <section id="step5" class="hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
+        <div class="flex flex-col md:flex-row justify-between items-start border-b border-slate-200 pb-4 mb-6 gap-4 md:gap-0">
           <div>
-            <h2 class="text-2xl font-bold text-slate-800">Informe de Resultados</h2>
-            <p class="text-sm text-slate-500 mt-1" id="reportDate"></p>
+            <h2 class="text-xl md:text-2xl font-bold text-slate-800">Informe Psicométrico Confidencial</h2>
+            <p class="text-xs md:text-sm text-slate-500 mt-1" id="reportDate"></p>
           </div>
-          <button onclick="window.print()" class="no-print bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg border border-slate-300">
-            Imprimir / Guardar PDF
+          <button onclick="window.print()" class="no-print w-full md:w-auto justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg border border-slate-300 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Imprimir Reporte
           </button>
         </div>
 
         <!-- Datos del paciente -->
-        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div><span class="text-slate-500">Nombre:</span> <strong id="resNombre" class="text-slate-800"></strong></div>
-          <div><span class="text-slate-500">Edad:</span> <strong id="resEdad" class="text-slate-800"></strong></div>
-          <div><span class="text-slate-500">Grado y Grupo:</span> <strong id="resGradoGrupo" class="text-slate-800"></strong></div>
+        <div class="bg-slate-50 p-3 md:p-4 rounded-lg border border-slate-200 mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 text-xs md:text-sm print-break-inside-avoid">
+          <div><span class="text-slate-500">Nombre:</span> <strong id="resNombre" class="text-slate-800 uppercase block sm:inline"></strong></div>
+          <div><span class="text-slate-500">Edad:</span> <strong id="resEdad" class="text-slate-800 block sm:inline"></strong></div>
+          <div><span class="text-slate-500">Grado y Grupo:</span> <strong id="resGradoGrupo" class="text-slate-800 block sm:inline"></strong></div>
         </div>
 
         <!-- Alerta Crítica (Item 9 BDI) -->
-        <div id="alertaCritica" class="hidden mb-6 p-4 rounded-lg bg-red-50 border border-red-300 text-red-800">
-          <div class="flex items-center gap-2 font-bold text-base">
-            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-            <span>ALERTA CLÍNICA: Puntuación Positiva en Ideación Suicida (Ítem 9 BDI)</span>
+        <div id="alertaCritica" class="hidden mb-6 p-3 md:p-4 rounded-lg bg-red-50 border border-red-300 text-red-800 print-break-inside-avoid">
+          <div class="flex items-start md:items-center gap-2 font-bold text-sm md:text-base">
+            <svg class="w-5 h-5 text-red-600 mt-0.5 md:mt-0 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <span>ALERTA CLÍNICA: Ideación Suicida (Ítem 9 BDI)</span>
           </div>
-          <p class="text-sm mt-1 text-red-700" id="alertaTexto"></p>
+          <p class="text-xs md:text-sm mt-1 text-red-700 ml-7 md:ml-0" id="alertaTexto"></p>
         </div>
 
-        <!-- Tarjetas de Resultados -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Tarjetas de Resultados Globales -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8">
           <!-- BAI Card -->
-          <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-br from-white to-slate-50">
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventario de Beck (BAI)</span>
-            <h3 class="text-lg font-bold text-slate-800 mt-1">Nivel de Ansiedad</h3>
-            <div class="mt-4 flex items-baseline gap-3">
-              <span id="resBaiScore" class="text-4xl font-extrabold text-slate-900"></span>
-              <span class="text-sm text-slate-500">/ 63 pts</span>
+          <div class="border border-slate-200 rounded-xl p-4 md:p-5 bg-gradient-to-br from-white to-slate-50 print-break-inside-avoid shadow-sm">
+            <span class="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventario de Beck (BAI)</span>
+            <h3 class="text-base md:text-lg font-bold text-slate-800 mt-1">Nivel de Ansiedad</h3>
+            <div class="mt-3 md:mt-4 flex items-baseline gap-2 md:gap-3">
+              <span id="resBaiScore" class="text-3xl md:text-4xl font-extrabold text-slate-900"></span>
+              <span class="text-xs md:text-sm text-slate-500">/ 63 pts</span>
             </div>
-            <div class="mt-3">
-              <span id="resBaiBadge" class="inline-block px-3 py-1 text-sm font-semibold rounded-full"></span>
+            <div class="mt-2 md:mt-3">
+              <span id="resBaiBadge" class="inline-block px-2 md:px-3 py-1 text-xs md:text-sm font-semibold rounded-full border"></span>
             </div>
-            <p id="resBaiDesc" class="text-xs text-slate-600 mt-3"></p>
+            <p id="resBaiDesc" class="text-[11px] md:text-xs text-slate-600 mt-2 md:mt-3"></p>
           </div>
 
           <!-- BDI Card -->
-          <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-br from-white to-slate-50">
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventario de Beck (BDI)</span>
-            <h3 class="text-lg font-bold text-slate-800 mt-1">Nivel de Depresión</h3>
-            <div class="mt-4 flex items-baseline gap-3">
-              <span id="resBdiScore" class="text-4xl font-extrabold text-slate-900"></span>
-              <span class="text-sm text-slate-500">/ 63 pts</span>
+          <div class="border border-slate-200 rounded-xl p-4 md:p-5 bg-gradient-to-br from-white to-slate-50 print-break-inside-avoid shadow-sm">
+            <span class="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventario de Beck (BDI)</span>
+            <h3 class="text-base md:text-lg font-bold text-slate-800 mt-1">Nivel de Depresión</h3>
+            <div class="mt-3 md:mt-4 flex items-baseline gap-2 md:gap-3">
+              <span id="resBdiScore" class="text-3xl md:text-4xl font-extrabold text-slate-900"></span>
+              <span class="text-xs md:text-sm text-slate-500">/ 63 pts</span>
             </div>
-            <div class="mt-3">
-              <span id="resBdiBadge" class="inline-block px-3 py-1 text-sm font-semibold rounded-full"></span>
+            <div class="mt-2 md:mt-3">
+              <span id="resBdiBadge" class="inline-block px-2 md:px-3 py-1 text-xs md:text-sm font-semibold rounded-full border"></span>
             </div>
-            <p id="resBdiDesc" class="text-xs text-slate-600 mt-3"></p>
+            <p id="resBdiDesc" class="text-[11px] md:text-xs text-slate-600 mt-2 md:mt-3"></p>
           </div>
         </div>
 
-        <!-- Indicador de Sincronización con Sheets -->
-        <div id="syncStatus" class="no-print text-center text-xs text-slate-500 py-2 border-t border-slate-100">
-          Enviando resultados a la base de datos...
+        <!-- RESPUESTAS DETALLADAS -->
+        <div class="mt-6 md:mt-8 pt-5 md:pt-6 border-t border-slate-200">
+          <h3 class="text-base md:text-lg font-bold text-slate-800 mb-4 md:mb-6">Desglose de Respuestas</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+            
+            <!-- Detalle BAI -->
+            <div class="print-break-inside-avoid">
+              <h4 class="font-bold text-indigo-700 border-b border-indigo-100 pb-2 mb-3 text-sm md:text-base">Ansiedad (BAI)</h4>
+              <ul id="listaDetalleBAI" class="text-[11px] md:text-xs text-slate-700 space-y-1.5 md:space-y-2">
+                <!-- Se inyecta por JS -->
+              </ul>
+            </div>
+
+            <!-- Detalle BDI -->
+            <div class="print-break-inside-avoid">
+              <h4 class="font-bold text-indigo-700 border-b border-indigo-100 pb-2 mb-3 text-sm md:text-base mt-4 lg:mt-0">Depresión (BDI)</h4>
+              <ul id="listaDetalleBDI" class="text-[11px] md:text-xs text-slate-700 space-y-2 md:space-y-2.5">
+                <!-- Se inyecta por JS -->
+              </ul>
+            </div>
+
+          </div>
         </div>
 
-        <div class="mt-6 flex justify-center no-print">
-          <button onclick="location.reload()" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">
-            &larr; Aplicar nueva evaluación
+        <div class="mt-8 md:mt-10 flex justify-center no-print">
+          <button onclick="location.reload()" class="w-full md:w-auto text-sm font-medium text-indigo-600 hover:text-indigo-800 py-2">
+            &larr; Cerrar y volver al inicio
           </button>
         </div>
       </div>
@@ -189,223 +260,58 @@
 
   <script>
     // URL DE TU WEB APP DE GOOGLE APPS SCRIPT
-    const APPS_SCRIPT_API_URL = "REEMPLAZAR_CON_TU_APPS_SCRIPT_URL_EXEC";
+    const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbxYskLZiYwdwfwnFi33G6-UFzMMBCZgbfYMfP3tD2SbIgNZ7zT-Mjj2jGpQzAbGXDk0/exec";
+    
+    // CLAVE PARA DESBLOQUEAR RESULTADOS (Cámbiala por la que prefieras)
+    const CLAVE_ACCESO = "psico2026";
+
+    // Protección adicional: Deshabilitar atajos de teclado para desarrolladores y selección
+    document.addEventListener('keydown', function(e) {
+      // Prevenir F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+      if(e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) || 
+        (e.ctrlKey && (e.key === 'U' || e.key === 'u'))) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+      return false;
+    });
 
     const baiQuestions = [
-      "Entumecimiento, hormigueo",
-      "Sentir oleadas de calor (bochorno)",
-      "Debilitamiento de las piernas",
-      "Dificultad para relajarse",
-      "Miedo a que pase lo peor",
-      "Sensación de mareo",
-      "Opresión en el pecho, o latidos acelerados",
-      "Inseguridad",
-      "Terror",
-      "Nerviosismo",
-      "Sensación de ahogo",
-      "Manos temblorosas",
-      "Cuerpo tembloroso",
-      "Miedo a perder el control",
-      "Dificultad para respirar",
-      "Miedo a morir",
-      "Asustado",
-      "Indigestión, o malestar estomacal",
-      "Debilidad",
-      "Ruborizarse, sonrojamiento",
-      "Sudoración (no debida al calor)"
+      "Entumecimiento, hormigueo", "Sentir oleadas de calor (bochorno)", "Debilitamiento de las piernas",
+      "Dificultad para relajarse", "Miedo a que pase lo peor", "Sensación de mareo",
+      "Opresión en el pecho, o latidos acelerados", "Inseguridad", "Terror", "Nerviosismo",
+      "Sensación de ahogo", "Manos temblorosas", "Cuerpo tembloroso", "Miedo a perder el control",
+      "Dificultad para respirar", "Miedo a morir", "Asustado", "Indigestión, o malestar estomacal",
+      "Debilidad", "Ruborizarse, sonrojamiento", "Sudoración (no debida al calor)"
     ];
 
     const bdiQuestions = [
-      {
-        num: 1,
-        options: [
-          "0 Yo no me siento triste.",
-          "1 Me siento triste.",
-          "2 Me siento triste todo el tiempo y no puedo evitarlo.",
-          "3 Estoy tan triste o infeliz que no puedo soportarlo."
-        ]
-      },
-      {
-        num: 2,
-        options: [
-          "0 En general no me siento descorazonado por el futuro.",
-          "1 Me siento descorazonado por mi futuro.",
-          "2 Siento que no tengo nada que esperar del futuro.",
-          "3 Siento que el futuro no tiene esperanza y que las cosas no pueden mejorar."
-        ]
-      },
-      {
-        num: 3,
-        options: [
-          "0 Yo no me siento como un fracasado.",
-          "1 Siento que he fracasado más que las personas en general.",
-          "2 Al repasar lo que he vivido, todo lo que veo son muchos fracasos.",
-          "3 Siento que soy un completo fracaso como persona."
-        ]
-      },
-      {
-        num: 4,
-        options: [
-          "0 Obtengo tanta satisfacción de las cosas como solía hacerlo.",
-          "1 Yo no disfruto de las cosas de la manera como solía hacerlo.",
-          "2 Ya no obtengo verdadera satisfacción de nada.",
-          "3 Estoy insatisfecho o aburrido con todo."
-        ]
-      },
-      {
-        num: 5,
-        options: [
-          "0 En realidad yo no me siento culpable.",
-          "1 Me siento culpable una gran parte del tiempo.",
-          "2 Me culpable la mayor parte del tiempo.",
-          "3 Me siento culpable todo el tiempo."
-        ]
-      },
-      {
-        num: 6,
-        options: [
-          "0 Yo no me siento que esté siendo castigado.",
-          "1 Siento que podría ser castigado.",
-          "2 Espero ser castigado.",
-          "3 Siento que he sido castigado."
-        ]
-      },
-      {
-        num: 7,
-        options: [
-          "0 Yo no me siento desilusionado de mí mismo.",
-          "1 Estoy desilusionado de mí mismo.",
-          "2 Estoy disgustado conmigo mismo.",
-          "3 Me odio."
-        ]
-      },
-      {
-        num: 8,
-        options: [
-          "0 Yo no me siento que sea peor que otras personas.",
-          "1 Me critico a mí mismo por mis debilidades o errores.",
-          "2 Me culpo todo el tiempo por mis fallas.",
-          "3 Me culpo por todo lo malo que sucede."
-        ]
-      },
-      {
-        num: 9,
-        options: [
-          "0 Yo no tengo pensamientos suicidas.",
-          "1 Tengo pensamientos suicidas, pero no los llevaría a cabo.",
-          "2 Me gustaría suicidarme.",
-          "3 Me suicidaría si tuviera la oportunidad."
-        ]
-      },
-      {
-        num: 10,
-        options: [
-          "0 Yo no lloro más de lo usual.",
-          "1 Lloro más ahora de lo que solía hacerlo.",
-          "2 Actualmente lloro todo el tiempo.",
-          "3 Antes podía llorar, pero ahora no lo puedo hacer a pesar de que lo deseo."
-        ]
-      },
-      {
-        num: 11,
-        options: [
-          "0 Yo no estoy más irritable de lo que solía estar.",
-          "1 Me enojo o irrito más fácilmente que antes.",
-          "2 Me siento irritado todo el tiempo.",
-          "3 Ya no me irrito de las cosas por las que solía hacerlo."
-        ]
-      },
-      {
-        num: 12,
-        options: [
-          "0 Yo no he perdido el interés en la gente.",
-          "1 Estoy menos interesado en la gente de lo que solía estar.",
-          "2 He perdido en gran medida el interés en la gente.",
-          "3 He perdido todo el interés en la gente."
-        ]
-      },
-      {
-        num: 13,
-        options: [
-          "0 Tomo decisiones tan bien como siempre lo he hecho.",
-          "1 Pospongo tomar decisiones más que antes.",
-          "2 Tengo más dificultad en tomar decisiones que antes.",
-          "3 Ya no puedo tomar decisiones."
-        ]
-      },
-      {
-        num: 14,
-        options: [
-          "0 Yo no siento que me vea peor de cómo me veía.",
-          "1 Estoy preocupado de verme viejo (a) o poco atractivo (a).",
-          "2 Siento que hay cambios permanentes en mi apariencia que me hacen ver poco atractivo (a).",
-          "3 Creo que me veo feo (a)."
-        ]
-      },
-      {
-        num: 15,
-        options: [
-          "0 Puedo trabajar tan bien como antes.",
-          "1 Requiero de más esfuerzo para iniciar algo.",
-          "2 Tengo que obligarme para hacer algo.",
-          "3 Yo no puedo hacer ningún trabajo."
-        ]
-      },
-      {
-        num: 16,
-        options: [
-          "0 Puedo dormir tan bien como antes.",
-          "1 Ya no duermo tan bien como solía hacerlo.",
-          "2 Me despierto una y o dos horas más temprano de lo normal y me cuesta trabajo volverme a dormir.",
-          "3 Me despierto muchas horas antes de lo que solía hacerlo y no puedo volver ha dormir."
-        ]
-      },
-      {
-        num: 17,
-        options: [
-          "0 Yo no me canso más de lo habitual.",
-          "1 Me canso más fácilmente de lo que solía hacerlo.",
-          "2 Con cualquier cosa que haga me canso.",
-          "3 Estoy muy cansado para hacer cualquier cosa."
-        ]
-      },
-      {
-        num: 18,
-        options: [
-          "0 Mi apetito no es peor de lo habitual.",
-          "1 Mi apetito no es tan bueno como solía serlo.",
-          "2 Mi apetito está muy mal ahora.",
-          "3 No tengo apetito de nada."
-        ]
-      },
-      {
-        num: 19,
-        options: [
-          "0 Yo no he perdido mucho peso últimamente.",
-          "1 He perdido más de dos kilogramos.",
-          "2 He perdido más de cinco kilogramos.",
-          "3 He perdido más de ocho kilogramos."
-        ],
-        extraQuestion: "¿A propósito estás tratando de perder peso comiendo menos?"
-      },
-      {
-        num: 20,
-        options: [
-          "0 Yo no estoy más preocupado de mi salud que antes.",
-          "1 Estoy preocupado acerca de problemas físicos tales como dolores, malestar estomacal o constipación.",
-          "2 Estoy muy preocupado por problemas físicos y es difícil pensar en algo más.",
-          "3 Estoy tan preocupado por mis problemas físicos que no puedo pensar en ninguna otra cosa."
-        ]
-      },
-      {
-        num: 21,
-        options: [
-          "0 Yo no he notado ningún cambio reciente en mi interés por los chicos/chicas.",
-          "1 Estoy menos interesado en los chicos/ chicas de lo que estaba.",
-          "2 Estoy mucho menos interesado en los chicos / chicas ahora.",
-          "3 He perdido completamente el interés por los chicos / chicas."
-        ]
-      }
+      { num: 1, options: ["0 Yo no me siento triste.", "1 Me siento triste.", "2 Me siento triste todo el tiempo y no puedo evitarlo.", "3 Estoy tan triste o infeliz que no puedo soportarlo."] },
+      { num: 2, options: ["0 En general no me siento descorazonado por el futuro.", "1 Me siento descorazonado por mi futuro.", "2 Siento que no tengo nada que esperar del futuro.", "3 Siento que el futuro no tiene esperanza y que las cosas no pueden mejorar."] },
+      { num: 3, options: ["0 Yo no me siento como un fracasado.", "1 Siento que he fracasado más que las personas en general.", "2 Al repasar lo que he vivido, todo lo que veo son muchos fracasos.", "3 Siento que soy un completo fracaso como persona."] },
+      { num: 4, options: ["0 Obtengo tanta satisfacción de las cosas como solía hacerlo.", "1 Yo no disfruto de las cosas de la manera como solía hacerlo.", "2 Ya no obtengo verdadera satisfacción de nada.", "3 Estoy insatisfecho o aburrido con todo."] },
+      { num: 5, options: ["0 En realidad yo no me siento culpable.", "1 Me siento culpable una gran parte del tiempo.", "2 Me siento culpable la mayor parte del tiempo.", "3 Me siento culpable todo el tiempo."] },
+      { num: 6, options: ["0 Yo no me siento que esté siendo castigado.", "1 Siento que podría ser castigado.", "2 Espero ser castigado.", "3 Siento que he sido castigado."] },
+      { num: 7, options: ["0 Yo no me siento desilusionado de mí mismo.", "1 Estoy desilusionado de mí mismo.", "2 Estoy disgustado conmigo mismo.", "3 Me odio."] },
+      { num: 8, options: ["0 Yo no me siento que sea peor que otras personas.", "1 Me critico a mí mismo por mis debilidades o errores.", "2 Me culpo todo el tiempo por mis fallas.", "3 Me culpo por todo lo malo que sucede."] },
+      { num: 9, options: ["0 Yo no tengo pensamientos suicidas.", "1 Tengo pensamientos suicidas, pero no los llevaría a cabo.", "2 Me gustaría suicidarme.", "3 Me suicidaría si tuviera la oportunidad."] },
+      { num: 10, options: ["0 Yo no lloro más de lo usual.", "1 Lloro más ahora de lo que solía hacerlo.", "2 Actualmente lloro todo el tiempo.", "3 Antes podía llorar, pero ahora no lo puedo hacer a pesar de que lo deseo."] },
+      { num: 11, options: ["0 Yo no estoy más irritable de lo que solía estar.", "1 Me enojo o irrito más fácilmente que antes.", "2 Me siento irritado todo el tiempo.", "3 Ya no me irrito de las cosas por las que solía hacerlo."] },
+      { num: 12, options: ["0 Yo no he perdido el interés en la gente.", "1 Estoy menos interesado en la gente de lo que solía estar.", "2 He perdido en gran medida el interés en la gente.", "3 He perdido todo el interés en la gente."] },
+      { num: 13, options: ["0 Tomo decisiones tan bien como siempre lo he hecho.", "1 Pospongo tomar decisiones más que antes.", "2 Tengo más dificultad en tomar decisiones que antes.", "3 Ya no puedo tomar decisiones."] },
+      { num: 14, options: ["0 Yo no siento que me vea peor de cómo me veía.", "1 Estoy preocupado de verme viejo (a) o poco atractivo (a).", "2 Siento que hay cambios permanentes en mi apariencia que me hacen ver poco atractivo (a).", "3 Creo que me veo feo (a)."] },
+      { num: 15, options: ["0 Puedo trabajar tan bien como antes.", "1 Requiero de más esfuerzo para iniciar algo.", "2 Tengo que obligarme para hacer algo.", "3 Yo no puedo hacer ningún trabajo."] },
+      { num: 16, options: ["0 Puedo dormir tan bien como antes.", "1 Ya no duermo tan bien como solía hacerlo.", "2 Me despierto una y o dos horas más temprano de lo normal y me cuesta trabajo volverme a dormir.", "3 Me despierto muchas horas antes de lo que solía hacerlo y no puedo volver ha dormir."] },
+      { num: 17, options: ["0 Yo no me canso más de lo habitual.", "1 Me canso más fácilmente de lo que solía hacerlo.", "2 Con cualquier cosa que haga me canso.", "3 Estoy muy cansado para hacer cualquier cosa."] },
+      { num: 18, options: ["0 Mi apetito no es peor de lo habitual.", "1 Mi apetito no es tan bueno como solía serlo.", "2 Mi apetito está muy mal ahora.", "3 No tengo apetito de nada."] },
+      { num: 19, options: ["0 Yo no he perdido mucho peso últimamente.", "1 He perdido más de dos kilogramos.", "2 He perdido más de cinco kilogramos.", "3 He perdido más de ocho kilogramos."], extraQuestion: "¿A propósito estás tratando de perder peso comiendo menos?" },
+      { num: 20, options: ["0 Yo no estoy más preocupado de mi salud que antes.", "1 Estoy preocupado acerca de problemas físicos tales como dolores, malestar estomacal o constipación.", "2 Estoy muy preocupado por problemas físicos y es difícil pensar en algo más.", "3 Estoy tan preocupado por mis problemas físicos que no puedo pensar en ninguna otra cosa."] },
+      { num: 21, options: ["0 Yo no he notado ningún cambio reciente en mi interés por los chicos/chicas.", "1 Estoy menos interesado en los chicos/ chicas de lo que estaba.", "2 Estoy mucho menos interesado en los chicos / chicas ahora.", "3 He perdido completamente el interés por los chicos / chicas."] }
     ];
 
     // Render BAI Questions
@@ -413,12 +319,12 @@
     baiQuestions.forEach((q, idx) => {
       const num = idx + 1;
       const div = document.createElement("div");
-      div.className = "p-4 bg-slate-50 rounded-lg border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3";
+      div.className = "p-3 md:p-4 bg-slate-50 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
       div.innerHTML = `
-        <span class="text-sm font-medium text-slate-800"><strong class="text-indigo-600">${num}.</strong> ${q}</span>
-        <div class="flex items-center gap-2 text-xs">
+        <span class="text-xs md:text-sm font-medium text-slate-800"><strong class="text-indigo-600">${num}.</strong> ${q}</span>
+        <div class="flex items-center gap-1.5 md:gap-2 text-xs w-full sm:w-auto justify-between sm:justify-end">
           ${[0, 1, 2, 3].map(val => `
-            <label class="flex items-center justify-center w-10 h-9 rounded border border-slate-300 bg-white hover:border-indigo-500 cursor-pointer font-semibold transition-all">
+            <label class="flex items-center justify-center w-8 h-8 md:w-10 md:h-9 rounded border border-slate-300 bg-white hover:border-indigo-500 cursor-pointer font-semibold transition-all flex-1 sm:flex-none">
               <input type="radio" name="bai_${num}" value="${val}" class="sr-only peer">
               <span class="peer-checked:bg-indigo-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded">${val}</span>
             </label>
@@ -432,18 +338,18 @@
     const bdiContainer = document.getElementById("bdiContainer");
     bdiQuestions.forEach(item => {
       const div = document.createElement("div");
-      div.className = "p-5 bg-slate-50 rounded-lg border border-slate-200";
+      div.className = "p-4 md:p-5 bg-slate-50 rounded-lg border border-slate-200";
       
       let html = `
-        <div class="text-sm font-bold text-slate-800 mb-3 text-indigo-700">Grupo ${item.num}</div>
-        <div class="space-y-2">
+        <div class="text-xs md:text-sm font-bold text-slate-800 mb-2 md:mb-3 text-indigo-700">Grupo ${item.num}</div>
+        <div class="space-y-2 md:space-y-2.5">
       `;
       
       item.options.forEach((opt, optIdx) => {
         html += `
-          <label class="flex items-start gap-3 p-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer transition-colors">
-            <input type="radio" name="bdi_${item.num}" value="${optIdx}" class="mt-1 text-indigo-600 focus:ring-indigo-500">
-            <span class="text-sm text-slate-700">${opt}</span>
+          <label class="flex items-start gap-2.5 md:gap-3 p-2 md:p-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer transition-colors w-full">
+            <input type="radio" name="bdi_${item.num}" value="${optIdx}" class="mt-0.5 md:mt-1 w-4 h-4 text-indigo-600 focus:ring-indigo-500 flex-shrink-0">
+            <span class="text-xs md:text-sm text-slate-700 leading-tight">${opt}</span>
           </label>
         `;
       });
@@ -451,15 +357,15 @@
 
       if (item.extraQuestion) {
         html += `
-          <div class="mt-4 pt-3 border-t border-slate-200 text-xs">
+          <div class="mt-3 md:mt-4 pt-3 border-t border-slate-200 text-xs">
             <label class="block font-semibold text-slate-700 mb-2">${item.extraQuestion}</label>
             <div class="flex gap-4">
-              <label class="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" name="bdi_dieta" value="Sí" class="text-indigo-600">
+              <label class="flex items-center gap-1.5 cursor-pointer bg-white px-3 py-1.5 rounded border border-slate-200">
+                <input type="radio" name="bdi_dieta" value="Sí" class="text-indigo-600 w-3.5 h-3.5">
                 <span>Sí</span>
               </label>
-              <label class="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" name="bdi_dieta" value="No" class="text-indigo-600" checked>
+              <label class="flex items-center gap-1.5 cursor-pointer bg-white px-3 py-1.5 rounded border border-slate-200">
+                <input type="radio" name="bdi_dieta" value="No" class="text-indigo-600 w-3.5 h-3.5" checked>
                 <span>No</span>
               </label>
             </div>
@@ -484,7 +390,6 @@
       }
 
       if (step === 3) {
-        // Validar que se hayan respondido todos los 21 de BAI
         for (let i = 1; i <= 21; i++) {
           if (!document.querySelector(`input[name="bai_${i}"]:checked`)) {
             alert(`Por favor responde el reactivo ${i} del cuestionario de Ansiedad (BAI).`);
@@ -498,41 +403,49 @@
       document.getElementById("step2").classList.add("hidden");
       document.getElementById("step3").classList.add("hidden");
       document.getElementById("step4").classList.add("hidden");
+      document.getElementById("step5").classList.add("hidden");
 
       // Mostrar paso solicitado
       document.getElementById(`step${step}`).classList.remove("hidden");
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Actualizar tracker
-      const widths = { 1: "25%", 2: "50%", 3: "75%", 4: "100%" };
-      document.getElementById("progressBar").style.width = widths[step];
+      // Actualizar tracker (solo hasta el paso 4)
+      if(step <= 4) {
+        const widths = { 1: "25%", 2: "50%", 3: "75%", 4: "100%" };
+        document.getElementById("progressBar").style.width = widths[step];
 
-      for (let i = 1; i <= 4; i++) {
-        const lbl = document.getElementById(`stepLabel${i}`);
-        if (i === step) {
-          lbl.className = "text-indigo-600 font-bold";
-        } else if (i < step) {
-          lbl.className = "text-emerald-600";
-        } else {
-          lbl.className = "text-slate-500";
+        for (let i = 1; i <= 4; i++) {
+          const lbl = document.getElementById(`stepLabel${i}`);
+          const lblMobile = document.getElementById(`stepLabel${i}_mobile`);
+          
+          if (i === step) {
+            if(lbl) lbl.className = lbl.className.replace(/text-emerald-600|text-slate-500/, "") + " text-indigo-600 font-bold";
+            if(lblMobile) lblMobile.className = lblMobile.className.replace(/text-emerald-600|text-slate-500/, "") + " text-indigo-600 font-bold";
+          } else if (i < step) {
+            if(lbl) lbl.className = lbl.className.replace(/text-indigo-600|text-slate-500|font-bold/, "") + " text-emerald-600";
+            if(lblMobile) lblMobile.className = lblMobile.className.replace(/text-indigo-600|text-slate-500|font-bold/, "") + " text-emerald-600";
+          } else {
+            if(lbl) lbl.className = lbl.className.replace(/text-indigo-600|text-emerald-600|font-bold/, "") + " text-slate-500";
+            if(lblMobile) lblMobile.className = lblMobile.className.replace(/text-indigo-600|text-emerald-600|font-bold/, "") + " text-slate-500";
+          }
         }
       }
     }
 
     // Baremo BAI
     function getBaiClassification(score) {
-      if (score <= 7) return { nivel: "Mínima", desc: "Nivel de ansiedad mínimo o imperceptible.", badge: "bg-emerald-100 text-emerald-800" };
-      if (score <= 15) return { nivel: "Leve", desc: "Ansiedad leve. Se recomienda monitoreo básico.", badge: "bg-blue-100 text-blue-800" };
-      if (score <= 25) return { nivel: "Moderada", desc: "Ansiedad moderada. Sugiere acompañamiento psicológico.", badge: "bg-amber-100 text-amber-800" };
-      return { nivel: "Severa", desc: "Ansiedad severa. Requiere valoración e intervención profesional.", badge: "bg-red-100 text-red-800" };
+      if (score <= 7) return { nivel: "Mínima", desc: "Nivel de ansiedad mínimo o imperceptible.", badge: "bg-emerald-100 text-emerald-800 border-emerald-200" };
+      if (score <= 15) return { nivel: "Leve", desc: "Ansiedad leve. Se recomienda monitoreo básico.", badge: "bg-blue-100 text-blue-800 border-blue-200" };
+      if (score <= 25) return { nivel: "Moderada", desc: "Ansiedad moderada. Sugiere acompañamiento psicológico.", badge: "bg-amber-100 text-amber-800 border-amber-200" };
+      return { nivel: "Severa", desc: "Ansiedad severa. Requiere valoración e intervención profesional.", badge: "bg-red-100 text-red-800 border-red-200" };
     }
 
     // Baremo BDI
     function getBdiClassification(score) {
-      if (score <= 9) return { nivel: "Mínima / Normal", desc: "Sin indicios significativos de depresión.", badge: "bg-emerald-100 text-emerald-800" };
-      if (score <= 18) return { nivel: "Leve", desc: "Sintomatología depresiva leve.", badge: "bg-blue-100 text-blue-800" };
-      if (score <= 29) return { nivel: "Moderada", desc: "Sintomatología depresiva moderada. Atención sugerida.", badge: "bg-amber-100 text-amber-800" };
-      return { nivel: "Severa", desc: "Depresión severa. Requiere atención clínica inmediata.", badge: "bg-red-100 text-red-800" };
+      if (score <= 9) return { nivel: "Mínima / Normal", desc: "Sin indicios significativos de depresión.", badge: "bg-emerald-100 text-emerald-800 border-emerald-200" };
+      if (score <= 18) return { nivel: "Leve", desc: "Sintomatología depresiva leve.", badge: "bg-blue-100 text-blue-800 border-blue-200" };
+      if (score <= 29) return { nivel: "Moderada", desc: "Sintomatología depresiva moderada. Atención sugerida.", badge: "bg-amber-100 text-amber-800 border-amber-200" };
+      return { nivel: "Severa", desc: "Depresión severa. Requiere atención clínica inmediata.", badge: "bg-red-100 text-red-800 border-red-200" };
     }
 
     async function finalizarYEnviar() {
@@ -546,7 +459,7 @@
 
       const btn = document.getElementById("btnSubmit");
       btn.disabled = true;
-      btn.innerHTML = `<span>Calculando y procesando...</span>`;
+      btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span>Enviando...</span>`;
 
       // Recolectar datos
       const nombre = document.getElementById("nombre").value.trim();
@@ -555,18 +468,25 @@
 
       let baiScore = 0;
       const baiResponses = {};
+      let htmlListaBAI = "";
       for (let i = 1; i <= 21; i++) {
         const val = parseInt(document.querySelector(`input[name="bai_${i}"]:checked`).value, 10);
         baiResponses[`item_${i}`] = val;
         baiScore += val;
+        // Construir detalle respuestas BAI
+        htmlListaBAI += `<li><strong class="text-slate-900">${i}.</strong> ${baiQuestions[i-1]}: <strong class="text-indigo-600 ml-1">(${val})</strong></li>`;
       }
 
       let bdiScore = 0;
       const bdiResponses = {};
+      let htmlListaBDI = "";
       for (let j = 1; j <= 21; j++) {
         const val = parseInt(document.querySelector(`input[name="bdi_${j}"]:checked`).value, 10);
         bdiResponses[`item_${j}`] = val;
         bdiScore += val;
+        // Construir detalle respuestas BDI
+        const respuestaTexto = bdiQuestions[j-1].options[val];
+        htmlListaBDI += `<li class="leading-tight"><strong class="text-slate-900">${j}.</strong> ${respuestaTexto}</li>`;
       }
 
       const bdiDieta = (document.querySelector(`input[name="bdi_dieta"]:checked`) || {}).value || "No";
@@ -576,10 +496,8 @@
       const baiDiag = getBaiClassification(baiScore);
       const bdiDiag = getBdiClassification(bdiScore);
 
-      // Desplegar reporte
-      document.getElementById("reportDate").textContent = new Date().toLocaleDateString("es-MX", {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-      });
+      // Pre-cargar datos del Reporte Oculto
+      document.getElementById("reportDate").textContent = new Date().toLocaleDateString("es-MX", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
       document.getElementById("resNombre").textContent = nombre;
       document.getElementById("resEdad").textContent = `${edad} años`;
       document.getElementById("resGradoGrupo").textContent = gradoGrupo;
@@ -587,55 +505,63 @@
       document.getElementById("resBaiScore").textContent = baiScore;
       const baiBadge = document.getElementById("resBaiBadge");
       baiBadge.textContent = baiDiag.nivel;
-      baiBadge.className = `inline-block px-3 py-1 text-sm font-semibold rounded-full ${baiDiag.badge}`;
+      baiBadge.className = `inline-block px-2 md:px-3 py-1 text-[11px] md:text-sm font-semibold rounded-full border ${baiDiag.badge}`;
       document.getElementById("resBaiDesc").textContent = baiDiag.desc;
 
       document.getElementById("resBdiScore").textContent = bdiScore;
       const bdiBadge = document.getElementById("resBdiBadge");
       bdiBadge.textContent = bdiDiag.nivel;
-      bdiBadge.className = `inline-block px-3 py-1 text-sm font-semibold rounded-full ${bdiDiag.badge}`;
+      bdiBadge.className = `inline-block px-2 md:px-3 py-1 text-[11px] md:text-sm font-semibold rounded-full border ${bdiDiag.badge}`;
       document.getElementById("resBdiDesc").textContent = bdiDiag.desc;
+
+      // Inyectar respuestas detalladas
+      document.getElementById("listaDetalleBAI").innerHTML = htmlListaBAI;
+      document.getElementById("listaDetalleBDI").innerHTML = htmlListaBDI;
 
       if (alertaRiesgo) {
         document.getElementById("alertaCritica").classList.remove("hidden");
         const bdi9Text = bdiQuestions[8].options[bdi9Val];
-        document.getElementById("alertaTexto").textContent = `El evaluado seleccionó la opción: "${bdi9Text}". Se requiere atención clínica prioritaria de acuerdo con el protocolo.`;
+        document.getElementById("alertaTexto").textContent = `El evaluado seleccionó la opción: "${bdi9Text}". Se requiere atención clínica prioritaria.`;
       } else {
         document.getElementById("alertaCritica").classList.add("hidden");
       }
 
-      goToStep(4);
-
       // Envío asíncrono a Google Apps Script
       const payload = {
-        nombre,
-        edad,
-        gradoGrupo,
-        baiScore,
-        baiNivel: baiDiag.nivel,
-        bdiScore,
-        bdiNivel: bdiDiag.nivel,
-        alertaRiesgo,
-        bdiDieta,
-        baiResponses,
-        bdiResponses
+        nombre, edad, gradoGrupo,
+        baiScore, baiNivel: baiDiag.nivel,
+        bdiScore, bdiNivel: bdiDiag.nivel,
+        alertaRiesgo, bdiDieta,
+        baiResponses, bdiResponses
       };
 
       try {
-        if (APPS_SCRIPT_API_URL && !APPS_SCRIPT_API_URL.includes("https://script.google.com/macros/s/AKfycbxYskLZiYwdwfwnFi33G6-UFzMMBCZgbfYMfP3tD2SbIgNZ7zT-Mjj2jGpQzAbGXDk0/exec")) {
-          await fetch(APPS_SCRIPT_API_URL, {
-            method: "POST",
-            mode: "no-cors", // Para evitar bloqueos CORS con Apps Script Web App
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          document.getElementById("syncStatus").innerHTML = `<span class="text-emerald-600 font-medium">✓ Resultados guardados exitosamente en la base de datos</span>`;
-        } else {
-          document.getElementById("syncStatus").innerHTML = `<span class="text-amber-600 font-medium">Modo local / Demostración: Reemplaza APPS_SCRIPT_API_URL para guardar en Google Sheets.</span>`;
-        }
+        await fetch(APPS_SCRIPT_API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        document.getElementById("syncStatus").innerHTML = `<span class="text-emerald-600 font-medium">✓ Resultados guardados exitosamente</span>`;
       } catch (err) {
-        console.error("Error al sincronizar con Apps Script:", err);
-        document.getElementById("syncStatus").innerHTML = `<span class="text-red-500 font-medium">Hubo una intermitencia al guardar en la nube, pero el reporte se generó correctamente.</span>`;
+        document.getElementById("syncStatus").innerHTML = `<span class="text-red-500 font-medium">Hubo una intermitencia al guardar, comunícalo a tu profesor.</span>`;
+      }
+
+      // Pasar a la pantalla de Agradecimiento (Paso 4)
+      goToStep(4);
+    }
+
+    // Función para mostrar el dashboard privado
+    function desbloquearResultados() {
+      const pin = prompt("🔐 Acceso Docente: Ingresa la clave para ver el informe psicométrico:");
+      if (pin === CLAVE_ACCESO) {
+        // Ocultar tracker de progreso y pantalla de agradecimiento
+        document.getElementById("progressTracker").classList.add("hidden");
+        document.getElementById("step4").classList.add("hidden");
+        // Mostrar el Reporte
+        document.getElementById("step5").classList.remove("hidden");
+      } else if (pin !== null) {
+        alert("Clave incorrecta. Acceso denegado.");
       }
     }
   </script>
