@@ -57,8 +57,17 @@
 
     <!-- PASO 2 -->
     <section id="step2" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
-      <h2 class="text-lg md:text-xl font-bold mb-2">Inventario de Ansiedad</h2>
+      <h2 class="text-lg md:text-xl font-bold mb-2">Inventario de Ansiedad (BAI)</h2>
       <p class="text-xs md:text-sm text-slate-600 mb-4">Indica cuánto te ha molestado cada síntoma <strong>durante la última semana, inclusive hoy</strong>.</p>
+      
+      <!-- LEYENDA VISUAL DE VALORES -->
+      <div class="mb-5 grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] md:text-xs font-medium text-slate-600 bg-slate-50 p-2 md:p-3 rounded-lg border border-slate-200">
+        <div><span class="font-bold text-indigo-700">0:</span> Poco o nada</div>
+        <div><span class="font-bold text-indigo-700">1:</span> Más o menos</div>
+        <div><span class="font-bold text-indigo-700">2:</span> Moderadamente</div>
+        <div><span class="font-bold text-indigo-700">3:</span> Severamente</div>
+      </div>
+
       <div id="baiContainer" class="space-y-3"></div>
       <div class="mt-6 flex flex-col-reverse md:flex-row justify-between gap-3">
         <button onclick="goToStep(1)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg">&larr; Volver</button>
@@ -68,8 +77,17 @@
 
     <!-- PASO 3 -->
     <section id="step3" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-8">
-      <h2 class="text-lg md:text-xl font-bold mb-2">Inventario de Depresión</h2>
+      <h2 class="text-lg md:text-xl font-bold mb-2">Inventario de Depresión (BDI)</h2>
       <p class="text-xs md:text-sm text-slate-600 mb-4">Selecciona la oración que mejor describa cómo te sentiste <strong>la semana pasada inclusive el día de hoy</strong>.</p>
+      
+      <!-- LEYENDA VISUAL DE VALORES AGREGADA -->
+      <div class="mb-5 grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] md:text-xs font-medium text-slate-600 bg-slate-50 p-2 md:p-3 rounded-lg border border-slate-200">
+        <div><span class="font-bold text-indigo-700">0:</span> Intensidad nula</div>
+        <div><span class="font-bold text-indigo-700">1:</span> Intensidad leve</div>
+        <div><span class="font-bold text-indigo-700">2:</span> Intensidad moderada</div>
+        <div><span class="font-bold text-indigo-700">3:</span> Intensidad severa</div>
+      </div>
+
       <div id="bdiContainer" class="space-y-4"></div>
       <div class="mt-6 flex flex-col-reverse md:flex-row justify-between gap-3">
         <button onclick="goToStep(2)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-lg">&larr; Volver</button>
@@ -144,9 +162,13 @@
       if(s<=4) document.getElementById("progressBar").style.width = {1:"25%",2:"50%",3:"75%",4:"100%"}[s];
     }
 
+    // NUEVOS BAREMOS ACTUALIZADOS SEGÚN DOCUMENTO DE ANNIE
     function getLevel(s, t) {
-      if(t==='bai') return s<=7?"Mínima":s<=15?"Leve":s<=25?"Moderada":"Severa";
-      return s<=9?"Mínima / Normal":s<=18?"Leve":s<=29?"Moderada":"Severa";
+      if(t === 'bai') {
+        return s <= 21 ? "Ansiedad muy baja" : s <= 35 ? "Ansiedad moderada" : "Ansiedad severa";
+      } else {
+        return s <= 13 ? "Mínimo" : s <= 19 ? "Leve" : s <= 28 ? "Moderado" : "Severo";
+      }
     }
 
     async function finalizarYEnviar() {
