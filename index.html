@@ -108,28 +108,29 @@
 
     const baiQuestions = ["Entumecimiento, hormigueo", "Sentir oleadas de calor (bochorno)", "Debilitamiento de las piernas", "Dificultad para relajarse", "Miedo a que pase lo peor", "Sensación de mareo", "Opresión en el pecho", "Inseguridad", "Terror", "Nerviosismo", "Sensación de ahogo", "Manos temblorosas", "Cuerpo tembloroso", "Miedo a perder el control", "Dificultad para respirar", "Miedo a morir", "Asustado", "Indigestión", "Debilidad", "Ruborizarse", "Sudoración"];
     
+    // TEXTOS DEL BDI SIN LOS NÚMEROS AL INICIO
     const bdiQuestions = [
-      ["0 Yo no me siento triste.", "1 Me siento triste.", "2 Me siento triste todo el tiempo y no puedo evitarlo.", "3 Estoy tan triste o infeliz que no puedo soportarlo."],
-      ["0 En general no me siento descorazonado por el futuro.", "1 Me siento descorazonado por mi futuro.", "2 Siento que no tengo nada que esperar del futuro.", "3 Siento que el futuro no tiene esperanza."],
-      ["0 Yo no me siento como un fracasado.", "1 Siento que he fracasado más que las personas en general.", "2 Al repasar lo que he vivido, todo lo que veo son muchos fracasos.", "3 Siento que soy un completo fracaso como persona."],
-      ["0 Obtengo tanta satisfacción de las cosas como solía hacerlo.", "1 Yo no disfruto de las cosas de la manera como solía hacerlo.", "2 Ya no obtengo verdadera satisfacción de nada.", "3 Estoy insatisfecho o aburrido con todo."],
-      ["0 En realidad yo no me siento culpable.", "1 Me siento culpable una gran parte del tiempo.", "2 Me siento culpable la mayor parte del tiempo.", "3 Me siento culpable todo el tiempo."],
-      ["0 Yo no me siento que esté siendo castigado.", "1 Siento que podría ser castigado.", "2 Espero ser castigado.", "3 Siento que he sido castigado."],
-      ["0 Yo no me siento desilusionado de mí mismo.", "1 Estoy desilusionado de mí mismo.", "2 Estoy disgustado conmigo mismo.", "3 Me odio."],
-      ["0 Yo no me siento que sea peor que otras personas.", "1 Me critico a mí mismo por mis debilidades o errores.", "2 Me culpo todo el tiempo por mis fallas.", "3 Me culpo por todo lo malo que sucede."],
-      ["0 Yo no tengo pensamientos suicidas.", "1 Tengo pensamientos suicidas, pero no los llevaría a cabo.", "2 Me gustaría suicidarme.", "3 Me suicidaría si tuviera la oportunidad."],
-      ["0 Yo no lloro más de lo usual.", "1 Lloro más ahora de lo que solía hacerlo.", "2 Actualmente lloro todo el tiempo.", "3 Antes podía llorar, pero ahora no lo puedo hacer a pesar de que lo deseo."],
-      ["0 Yo no estoy más irritable de lo que solía estar.", "1 Me enojo o irrito más fácilmente que antes.", "2 Me siento irritado todo el tiempo.", "3 Ya no me irrito de las cosas por las que solía hacerlo."],
-      ["0 Yo no he perdido el interés en la gente.", "1 Estoy menos interesado en la gente de lo que solía estar.", "2 He perdido en gran medida el interés en la gente.", "3 He perdido todo el interés en la gente."],
-      ["0 Tomo decisiones tan bien como siempre lo he hecho.", "1 Pospongo tomar decisiones más que antes.", "2 Tengo más dificultad en tomar decisiones que antes.", "3 Ya no puedo tomar decisiones."],
-      ["0 Yo no siento que me vea peor de cómo me veía.", "1 Estoy preocupado de verme viejo (a) o poco atractivo (a).", "2 Siento que hay cambios permanentes en mi apariencia que me hacen ver poco atractivo (a).", "3 Creo que me veo feo (a)."],
-      ["0 Puedo trabajar tan bien como antes.", "1 Requiero de más esfuerzo para iniciar algo.", "2 Tengo que obligarme para hacer algo.", "3 Yo no puedo hacer ningún trabajo."],
-      ["0 Puedo dormir tan bien como antes.", "1 Ya no duermo tan bien como solía hacerlo.", "2 Me despierto más temprano de lo normal.", "3 Me despierto muchas horas antes de lo que solía hacerlo."],
-      ["0 Yo no me canso más de lo habitual.", "1 Me canso más fácilmente de lo que solía hacerlo.", "2 Con cualquier cosa que haga me canso.", "3 Estoy muy cansado para hacer cualquier cosa."],
-      ["0 Mi apetito no es peor de lo habitual.", "1 Mi apetito no es tan bueno como solía serlo.", "2 Mi apetito está muy mal ahora.", "3 No tengo apetito de nada."],
-      ["0 Yo no he perdido mucho peso últimamente.", "1 He perdido más de 2 kg.", "2 He perdido más de 5 kg.", "3 He perdido más de 8 kg."],
-      ["0 Yo no estoy más preocupado de mi salud que antes.", "1 Estoy preocupado acerca de problemas físicos.", "2 Estoy muy preocupado por problemas físicos.", "3 Estoy tan preocupado por mis problemas físicos que no puedo pensar en nada más."],
-      ["0 Yo no he notado ningún cambio reciente en mi interés por los chicos/chicas.", "1 Estoy menos interesado.", "2 Estoy mucho menos interesado.", "3 He perdido completamente el interés."]
+      ["Yo no me siento triste.", "Me siento triste.", "Me siento triste todo el tiempo y no puedo evitarlo.", "Estoy tan triste o infeliz que no puedo soportarlo."],
+      ["En general no me siento descorazonado por el futuro.", "Me siento descorazonado por mi futuro.", "Siento que no tengo nada que esperar del futuro.", "Siento que el futuro no tiene esperanza y que las cosas no pueden mejorar."],
+      ["Yo no me siento como un fracasado.", "Siento que he fracasado más que las personas en general.", "Al repasar lo que he vivido, todo lo que veo son muchos fracasos.", "Siento que soy un completo fracaso como persona."],
+      ["Obtengo tanta satisfacción de las cosas como solía hacerlo.", "Yo no disfruto de las cosas de la manera como solía hacerlo.", "Ya no obtengo verdadera satisfacción de nada.", "Estoy insatisfecho o aburrido con todo."],
+      ["En realidad yo no me siento culpable.", "Me siento culpable una gran parte del tiempo.", "Me siento culpable la mayor parte del tiempo.", "Me siento culpable todo el tiempo."],
+      ["Yo no me siento que esté siendo castigado.", "Siento que podría ser castigado.", "Espero ser castigado.", "Siento que he sido castigado."],
+      ["Yo no me siento desilusionado de mí mismo.", "Estoy desilusionado de mí mismo.", "Estoy disgustado conmigo mismo.", "Me odio."],
+      ["Yo no me siento que sea peor que otras personas.", "Me critico a mí mismo por mis debilidades o errores.", "Me culpo todo el tiempo por mis fallas.", "Me culpo por todo lo malo que sucede."],
+      ["Yo no tengo pensamientos suicidas.", "Tengo pensamientos suicidas, pero no los llevaría a cabo.", "Me gustaría suicidarme.", "Me suicidaría si tuviera la oportunidad."],
+      ["Yo no lloro más de lo usual.", "Lloro más ahora de lo que solía hacerlo.", "Actualmente lloro todo el tiempo.", "Antes podía llorar, pero ahora no lo puedo hacer a pesar de que lo deseo."],
+      ["Yo no estoy más irritable de lo que solía estar.", "Me enojo o irrito más fácilmente que antes.", "Me siento irritado todo el tiempo.", "Ya no me irrito de las cosas por las que solía hacerlo."],
+      ["Yo no he perdido el interés en la gente.", "Estoy menos interesado en la gente de lo que solía estar.", "He perdido en gran medida el interés en la gente.", "He perdido todo el interés en la gente."],
+      ["Tomo decisiones tan bien como siempre lo he hecho.", "Pospongo tomar decisiones más que antes.", "Tengo más dificultad en tomar decisiones que antes.", "Ya no puedo tomar decisiones."],
+      ["Yo no siento que me vea peor de cómo me veía.", "Estoy preocupado de verme viejo (a) o poco atractivo (a).", "Siento que hay cambios permanentes en mi apariencia que me hacen ver poco atractivo (a).", "Creo que me veo feo (a)."],
+      ["Puedo trabajar tan bien como antes.", "Requiero de más esfuerzo para iniciar algo.", "Tengo que obligarme para hacer algo.", "Yo no puedo hacer ningún trabajo."],
+      ["Puedo dormir tan bien como antes.", "Ya no duermo tan bien como solía hacerlo.", "Me despierto una o dos horas más temprano de lo normal y me cuesta trabajo volverme a dormir.", "Me despierto muchas horas antes de lo que solía hacerlo y no puedo volver a dormir."],
+      ["Yo no me canso más de lo habitual.", "Me canso más fácilmente de lo que solía hacerlo.", "Con cualquier cosa que haga me canso.", "Estoy muy cansado para hacer cualquier cosa."],
+      ["Mi apetito no es peor de lo habitual.", "Mi apetito no es tan bueno como solía serlo.", "Mi apetito está muy mal ahora.", "No tengo apetito de nada."],
+      ["Yo no he perdido mucho peso últimamente.", "He perdido más de dos kilogramos.", "He perdido más de cinco kilogramos.", "He perdido más de ocho kilogramos."],
+      ["Yo no estoy más preocupado de mi salud que antes.", "Estoy preocupado acerca de problemas físicos tales como dolores, malestar estomacal o constipación.", "Estoy muy preocupado por problemas físicos y es difícil pensar en algo más.", "Estoy tan preocupado por mis problemas físicos que no puedo pensar en ninguna otra cosa."],
+      ["Yo no he notado ningún cambio reciente en mi interés por los chicos/chicas.", "Estoy menos interesado en los chicos/chicas de lo que estaba.", "Estoy mucho menos interesado en los chicos/chicas ahora.", "He perdido completamente el interés por los chicos/chicas."]
     ];
 
     // Render BAI
@@ -142,7 +143,7 @@
     const bdiContainer = document.getElementById("bdiContainer");
     bdiQuestions.forEach((opts, i) => {
       let extra = i === 18 ? `<div class="mt-3 pt-3 border-t text-sm"><label class="block mb-2">¿A propósito estás tratando de perder peso comiendo menos?</label><div class="flex gap-4"><label><input type="radio" name="bdi_dieta" value="Sí" class="mr-1">Sí</label><label><input type="radio" name="bdi_dieta" value="No" class="mr-1" checked>No</label></div></div>` : '';
-      let optsHtml = opts.map((opt, optIdx) => `<label class="flex items-start gap-2 p-2 rounded-lg border bg-white cursor-pointer"><input type="radio" name="bdi_${i+1}" value="${optIdx}" class="mt-1"><span class="text-sm">${opt}</span></label>`).join('');
+      let optsHtml = opts.map((opt, optIdx) => `<label class="flex items-start gap-2.5 p-2.5 rounded-lg border bg-white hover:bg-slate-50 cursor-pointer"><input type="radio" name="bdi_${i+1}" value="${optIdx}" class="mt-1 flex-shrink-0"><span class="text-sm">${opt}</span></label>`).join('');
       bdiContainer.innerHTML += `<div class="p-4 bg-slate-50 rounded-lg border mb-4"><div class="font-bold text-indigo-700 mb-2">Grupo ${i+1}</div><div class="space-y-2">${optsHtml}</div>${extra}</div>`;
     });
 
